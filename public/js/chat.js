@@ -15,7 +15,7 @@ const locationMessageTemplate = document.querySelector(
 const sideBarTemplate = document.querySelector('#sidebar-template').innerHTML;
 
 // Options
-const { username, room } = Qs.parse(location.search, {
+const { username, room, joinRoom } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
 
@@ -117,7 +117,7 @@ $sendLocationButton.addEventListener('click', () => {
   });
 });
 
-socket.emit('join', { username, room }, (error) => {
+socket.emit('join', { username, room: room || joinRoom }, (error) => {
   if (error) {
     alert(error);
     location.href = '/';

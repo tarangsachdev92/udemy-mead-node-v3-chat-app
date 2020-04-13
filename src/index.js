@@ -15,6 +15,8 @@ const {
   removeUser,
 } = require('./utils/users');
 
+const { addRoom, removeRoom, getAllRooms } = require('./utils/rooms');
+
 const app = express();
 // create server outside of the express library
 const server = http.createServer(app);
@@ -40,6 +42,7 @@ io.on('connection', (socket) => {
     }
 
     socket.join(user.room);
+    addRoom(user.room);
 
     socket.emit('message', generateMessage('Admin', 'Welcome!'));
 
@@ -51,6 +54,7 @@ io.on('connection', (socket) => {
       );
 
     // every one in the room including current user
+    // users' list in sidebar
     io.to(user.room).emit('roomData', {
       room: user.room,
       users: getUsersInRoom(user.room),
@@ -59,6 +63,11 @@ io.on('connection', (socket) => {
     callback();
     // socket.emit, io.emit, socket.broadcast.emit
     // io.to.emit, socket.broadcast.to.emit
+  });
+
+  // list of available rooms
+  socket.on('roomsListQuery', () => {
+    socket.emit('roomsList', getAllRooms());
   });
 
   socket.on('sendMessage', (message, callback) => {
@@ -94,12 +103,16 @@ io.on('connection', (socket) => {
     // no chance to get notify for that client
 
     const user = removeUser(socket.id);
+
     if (user) {
       io.to(user.room).emit(
         'message',
         generateMessage('Admin', `${user.username} has left!`)
       );
 
+      removeRoom(user.room);
+
+      // users' list in sidebar
       io.to(user.room).emit('roomData', {
         room: user.room,
         users: getUsersInRoom(user.room),
