@@ -16,7 +16,7 @@ const sideBarTemplate = document.querySelector('#sidebar-template').innerHTML;
 
 // Options
 const { username, room, joinRoom } = Qs.parse(location.search, {
-  ignoreQueryPrefix: true,
+  ignoreQueryPrefix: true, // question mark goes away
 });
 
 const autoScroll = () => {

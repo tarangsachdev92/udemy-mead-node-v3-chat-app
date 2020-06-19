@@ -22,8 +22,8 @@ io.on('connection', (socket) => {
   socket.emit('countUpdated', count);
   socket.on('increment', () => {
     count++;
-    // socket.emit('countUpdated', count);
-    io.emit('countUpdated', count);
+    // socket.emit('countUpdated', count); // emit only current(specific) connection
+    io.emit('countUpdated', count); // emit to all open(Avalilable) connection
   });
 });
 

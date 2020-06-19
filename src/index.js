@@ -13,6 +13,7 @@ const {
   getUser,
   getUsersInRoom,
   removeUser,
+  getUsers,
 } = require('./utils/users');
 
 const { addRoom, removeRoom, getAllRooms } = require('./utils/rooms');
@@ -67,7 +68,7 @@ io.on('connection', (socket) => {
 
   // list of available rooms
   socket.on('roomsListQuery', () => {
-    socket.emit('roomsList', getAllRooms());
+    socket.emit('roomsList', { rooms: getAllRooms(), users: getUsers() });
   });
 
   socket.on('sendMessage', (message, callback) => {
